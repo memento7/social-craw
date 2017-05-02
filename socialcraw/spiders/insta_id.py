@@ -11,6 +11,7 @@ class InstaIdSpider(scrapy.Spider):
 
 
 	def start_requests(self) :
+		# user_entities: temp data
 		user_entities = [
 			{
 				'id': 1,

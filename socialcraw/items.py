@@ -18,5 +18,5 @@ class InstaUserInfoItem(scrapy.Item):
 
 class InstaUserFollowsItem(scrapy.Item):
     # define the fields for your item here like:
-    user = scrapy.Field()
+    entity_id = scrapy.Field()
     follows = scrapy.Field()
