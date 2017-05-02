@@ -14,6 +14,7 @@ BOT_NAME = 'socialcraw'
 SPIDER_MODULES = ['socialcraw.spiders']
 NEWSPIDER_MODULE = 'socialcraw.spiders'
 
+LOG_LEVEL='INFO'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'socialcraw (+http://www.yourdomain.com)'
@@ -39,10 +40,13 @@ ROBOTSTXT_OBEY = False
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
-#}
+DEFAULT_REQUEST_HEADERS = {
+	'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+	'Accept-Encoding': 'gzip, deflate, sdch, br',
+	'Accept-Language': 'ko,en;q=0.8,en-US;q=0.6,da;q=0.4,la;q=0.2',
+	'Cache-Control': 'max-age=0',
+	'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+}
 
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
@@ -65,7 +69,9 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'socialcraw.pipelines.JsonWriterPipeline': 300,
+   #'socialcraw.pipelines.JsonWriterPipeline': 300,
+   'socialcraw.pipelines.InstaFollowsPipeline': 300,
+   'socialcraw.pipelines.InstaIdPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

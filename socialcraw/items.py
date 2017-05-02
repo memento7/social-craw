@@ -8,7 +8,15 @@
 import scrapy
 
 
-class QuotesbotItem(scrapy.Item):
+class InstaUserInfoItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    entity_id = scrapy.Field()
+    insta_id = scrapy.Field()
+    username = scrapy.Field()
+    data = scrapy.Field()
+
+
+class InstaUserFollowsItem(scrapy.Item):
+    # define the fields for your item here like:
+    user = scrapy.Field()
+    follows = scrapy.Field()
