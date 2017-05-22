@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import json
+import requests
 
 from socialcraw import security
 from socialcraw import items
@@ -11,50 +12,22 @@ class InstaIdSpider(scrapy.Spider):
 
 
 	def start_requests(self) :
-		# user_entities: temp data
-		user_entities = [
-			{
-				'id': 1,
-				'nickname': '김태희',
-				'realname': '김태희',
-				'subkey': '',
+		# Get entities from API Server
+		r = requests.get(
+			url='https://api.memento.live/publish/entities',
+			headers={
+				'Authorization': security.API_AUTH,
+				'Content-Type': 'application/json',
 			},
-			{
-				'id': 2,
-				'nickname': '비',
-				'realname': '정지훈',
-				'subkey': '가수',
-			},
-			{
-				'id': 3,
-				'nickname': '공유',
-				'realname': '공지철',
-				'subkey': '배우',
-			},
-			{
-				'id': 4,
-				'nickname': '최순실',
-				'realname': '최서원',
-				'subkey': '배우',
-			},
-			{
-				'id': 5,
-				'nickname': '김세정',
-				'realname': '김세정',
-				'subkey': '아이오아이',
-			},
-			{
-				'id': 6,
-				'nickname': '박근혜',
-				'realname': '박근혜',
-				'subkey': '',
-			},
-		]
+		)
+		user_entities = json.loads(r.text)
 		
 		for entity in user_entities:
 			search_key = entity['nickname']
-			if entity['subkey'] :
-				search_key += " " + entity['subkey']
+			subkey = entity.get('subkey', None)
+
+			if subkey :
+				search_key += " " + subkey
 
 			yield scrapy.Request(
 				url='https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=%s' % search_key,

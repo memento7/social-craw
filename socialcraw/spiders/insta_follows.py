@@ -7,12 +7,11 @@ from socialcraw import items
 
 
 class InstaFollowsSpider(scrapy.Spider):
-	""" TO BE FIXED
-	"""
 	name = "insta-follows"
 
 	def start_requests(self) :
-		# user_entities: temp data
+		# TODO: get from API Server
+		
 		user_entities = [
 			{
 				'id': 1,
@@ -22,6 +21,9 @@ class InstaFollowsSpider(scrapy.Spider):
 			},
 			{
 				'id': 2,
+				'sns': {
+					'instagram': '977612377'
+				}
 			},
 			{
 				'id': 3,
@@ -42,6 +44,7 @@ class InstaFollowsSpider(scrapy.Spider):
 
 		for entity in user_entities:
 			if 'sns' not in entity : continue
+			if 'instagram' not in entity['sns'] : continue
 
 			insta_id = entity['sns']['instagram']
 
