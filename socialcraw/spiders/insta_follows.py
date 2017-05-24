@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import json
+import requests
 
 from socialcraw import security
 from socialcraw import items
@@ -10,43 +11,21 @@ class InstaFollowsSpider(scrapy.Spider):
 	name = "insta-follows"
 
 	def start_requests(self) :
-		# TODO: get from API Server
-		
-		user_entities = [
-			{
-				'id': 1,
-				'sns': {
-					'instagram': '1474623111'
-				}
+		# Get entities from API Server
+		r = requests.get(
+			url='https://api.memento.live/publish/entities',
+			headers={
+				'Authorization': security.API_AUTH,
+				'Content-Type': 'application/json',
 			},
-			{
-				'id': 2,
-				'sns': {
-					'instagram': '977612377'
-				}
-			},
-			{
-				'id': 3,
-			},
-			{
-				'id': 4,
-			},
-			{
-				'id': 5,
-				'sns': {
-					'instagram': '3408064405'
-				}
-			},
-			{
-				'id': 6,
-			},
-		]
+		)
+		user_entities = json.loads(r.text)
 
 		for entity in user_entities:
-			if 'sns' not in entity : continue
-			if 'instagram' not in entity['sns'] : continue
-
-			insta_id = entity['sns']['instagram']
+			try :
+				insta_id = entity['role_json']['PERSON']['data']['sns']['instagram']
+			except e:
+				continue
 
 			yield scrapy.Request(
 				url='https://www.instagram.com/graphql/query/?query_id=17874545323001329&id=%s&first=200' % insta_id,
