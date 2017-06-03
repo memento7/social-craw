@@ -8,15 +8,18 @@
 import scrapy
 
 
+class ProfileImageItem(scrapy.Item):
+	entity_id = scrapy.Field()
+	image_link = scrapy.Field()
+
+
 class InstaUserInfoItem(scrapy.Item):
-    # define the fields for your item here like:
-    entity_id = scrapy.Field()
-    insta_id = scrapy.Field()
-    username = scrapy.Field()
-    data = scrapy.Field()
+	entity_id = scrapy.Field()
+	insta_id = scrapy.Field()
+	username = scrapy.Field()
+	data = scrapy.Field()
 
 
 class InstaUserFollowsItem(scrapy.Item):
-    # define the fields for your item here like:
-    entity_id = scrapy.Field()
-    follows = scrapy.Field()
+	entity_id = scrapy.Field()
+	follows = scrapy.Field()

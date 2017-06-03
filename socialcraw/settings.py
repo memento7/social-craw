@@ -70,6 +70,7 @@ DEFAULT_REQUEST_HEADERS = {
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    #'socialcraw.pipelines.JsonWriterPipeline': 300,
+   'socialcraw.pipelines.ProfileImagePipeline': 300,
    'socialcraw.pipelines.InstaFollowsPipeline': 300,
    'socialcraw.pipelines.InstaIdPipeline': 300,
 }

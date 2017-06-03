@@ -7,8 +7,9 @@ from socialcraw import security
 from socialcraw import items
 from socialcraw.utils import cprint
 
-class InstaIdSpider(scrapy.Spider):
-	name = "insta-id"
+
+class EntityMetaSpider(scrapy.Spider):
+	name = "entity-meta"
 
 
 	def start_requests(self) :
@@ -27,22 +28,39 @@ class InstaIdSpider(scrapy.Spider):
 			subkey = entity.get('subkey', None)
 
 			if subkey :
-				search_key += " " + subkey
+				search_key = subkey + " " + search_key
 
 			yield scrapy.Request(
 				url='https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=%s' % search_key,
-				callback=self.parse_username,
-				meta={'entity_id': entity['id']},
+				callback=self.parse_naver,
+				meta={'entity': entity},
 			)
 
 
 
-	def parse_username(self, response) :
-		""" Parse Instagram username on NAVER
+	def parse_naver(self, response) :
+		""" Parse Instagram username and profile image on NAVER
 		"""
-		entity_id = response.meta.get('entity_id')
-		detail_profile = response.css(".detail_profile").extract_first()
+		entity = response.meta.get('entity')
+		entity_id = entity['id']
+		detail_profile = response.css('.detail_profile').extract_first()
 		
+		profile_image_url = response.css('.big_thumb img').xpath('@src').extract_first()
+
+		if profile_image_url :
+			profile_image_exists = False
+
+			for image in entity['images'] :
+				if image['type'] == 'profile' :
+					profile_image_exists = True
+					break
+
+			if not profile_image_exists :
+				yield items.ProfileImageItem(
+					entity_id=entity_id,
+					image_link=profile_image_url,
+				)
+
 
 		if (not detail_profile) or ('인스타그램' not in detail_profile) :
 			# User don't have official account
