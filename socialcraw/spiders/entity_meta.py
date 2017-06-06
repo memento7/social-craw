@@ -14,14 +14,25 @@ class EntityMetaSpider(scrapy.Spider):
 
 	def start_requests(self) :
 		# Get entities from API Server
-		r = requests.get(
-			url='https://api.memento.live/publish/entities',
-			headers={
-				'Authorization': security.API_AUTH,
-				'Content-Type': 'application/json',
-			},
-		)
-		user_entities = json.loads(r.text)
+
+		user_entities = []
+		page_num = 0
+		while True :
+			r = requests.get(
+				url='https://api.memento.live/publish/entities?page=%d' % page_num,
+				headers={
+					'Authorization': security.API_AUTH,
+					'Content-Type': 'application/json',
+				},
+			)
+
+			data = json.loads(r.text)
+
+			if type(data) is not list or len(data) == 0 : break
+
+			user_entities += data
+			page_num += 1
+
 		
 		for entity in user_entities:
 			search_key = entity['nickname']
@@ -43,9 +54,14 @@ class EntityMetaSpider(scrapy.Spider):
 		"""
 		entity = response.meta.get('entity')
 		entity_id = entity['id']
-		detail_profile = response.css('.detail_profile').extract_first()
+
+		detail_profile = response.css('.profile_wrap .detail_profile').extract_first()
 		
-		profile_image_url = response.css('.big_thumb img').xpath('@src').extract_first()
+		member_thumb_url = response.css('.profile_wrap .member_thumb img').xpath('@src').extract_first()
+		profile_image_url = response.css('.profile_wrap .big_thumb img').xpath('@src').extract_first()
+
+		if not profile_image_url and member_thumb_url :
+			profile_image_url = member_thumb_url
 
 		if profile_image_url :
 			profile_image_exists = False

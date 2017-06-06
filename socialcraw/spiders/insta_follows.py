@@ -12,14 +12,25 @@ class InstaFollowsSpider(scrapy.Spider):
 
 	def start_requests(self) :
 		# Get entities from API Server
-		r = requests.get(
-			url='https://api.memento.live/publish/entities',
-			headers={
-				'Authorization': security.API_AUTH,
-				'Content-Type': 'application/json',
-			},
-		)
-		user_entities = json.loads(r.text)
+		user_entities = []
+		page_num = 0
+		while True :
+			r = requests.get(
+				url='https://api.memento.live/publish/entities?page=%d' % page_num,
+				headers={
+					'Authorization': security.API_AUTH,
+					'Content-Type': 'application/json',
+				},
+			)
+
+			data = json.loads(r.text)
+
+			if type(data) is not list or len(data) == 0 : break
+
+			user_entities += data
+			page_num += 1
+
+			
 
 		for entity in user_entities:
 			try :
